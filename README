@@ -1,0 +1,107 @@
+# Sand Mining Detection System
+
+## Overview
+
+This system detects and maps sand mining activities along river systems using satellite imagery and machine learning. The improved version addresses graininess in images and ensures the river is clearly visible in all downloaded images.
+
+## Components
+
+The system consists of the following key files:
+
+1. **improved_sand_mining_detection.py** - Main module with enhanced image quality
+2. **sand_mining_probability_mapping.py** - Creates probability maps across the entire river
+3. **run_sand_mining_detection.py** - Command-line interface to run both modules
+4. **river_focused_sand_mining.py** - NEW! Specifically focuses on downloading high-quality river images
+
+## Key Improvements
+
+### Image Quality Enhancements
+- **Higher Resolution Images**: Images now downloaded at 2048px and 3072px resolution
+- **Better River Visibility**: Uses algorithms to center images on river courses
+- **Enhanced Visualization**: Advanced image processing to reduce graininess
+- **Multiple Visualizations**: True color, water index (NDWI), and false color views
+- **Advanced Filtering**: Applies sophisticated image enhancement techniques
+
+### River-Focused Approach
+- Images are now specifically centered on the river course
+- Larger viewing areas (5km patches instead of 2km)
+- Better contrast parameters to highlight river features
+- Special water index visualizations to clearly show the river
+
+### Authentication Fixes
+- Improved Earth Engine authentication process for both scripts
+- Proper project ID handling to prevent authentication errors
+
+## How to Use
+
+### 1. River-Focused Image Download (NEW!)
+
+For the best quality river images, use the new dedicated river-focused script:
+
+```bash
+python river_focused_sand_mining.py
+```
+
+This will:
+- Prompt you for the shapefile path and sampling distance
+- Download three types of high-quality images for each river segment
+- Open a viewer to browse the downloaded images
+
+### 2. Full Sand Mining Detection Workflow
+
+For the complete workflow including model training and probability mapping:
+
+```bash
+# Train the model with improved river-focused images
+python run_sand_mining_detection.py --mode train --shapefile DATA/DAMODAR_SHAPEFILE/mrb_basins.shp
+
+# Generate a probability map of sand mining along the river
+python run_sand_mining_detection.py --mode map --shapefile DATA/DAMODAR_SHAPEFILE/mrb_basins.shp --distance 0.5
+
+# Or do both in a single command
+python run_sand_mining_detection.py --mode both --shapefile DATA/DAMODAR_SHAPEFILE/mrb_basins.shp
+```
+
+## Output Files
+
+- **sand_mining_detection/river_images/** - High quality river-focused images
+- **sand_mining_detection/YES_SANDMINING/** - Positive training examples
+- **sand_mining_detection/NO_SANDMINING/** - Negative training examples
+- **sand_mining_detection/sand_mining_model.joblib** - Trained model
+- **sand_mining_detection/probability_maps/** - Generated probability maps and reports
+
+## Troubleshooting
+
+### No River Visible in Images
+If you still have problems seeing the river in images:
+1. Try the new `river_focused_sand_mining.py` script which specifically targets river visibility
+2. Try decreasing the sampling distance (e.g., `--distance 2`) to ensure points are on the river
+3. Check your shapefile to confirm it properly represents the river (polyline or polygon)
+
+### Images Still Grainy
+1. The system now downloads much higher resolution images (3072px instead of 1024px)
+2. Advanced image enhancement is applied to reduce noise and improve clarity
+3. Try viewing the different visualization types (especially the water index view)
+4. Consider the limitations of satellite imagery - Sentinel-2 has 10m resolution
+
+### Authentication Errors
+If you get "Not signed up for Earth Engine" errors:
+1. Make sure you've signed up at https://signup.earthengine.google.com/
+2. Create a project in Google Cloud Console
+3. Enable the Earth Engine API for your project
+4. When prompted, enter your Google Cloud Project ID (e.g., "ed-sayandasgupta97")
+
+## System Requirements
+
+- Python 3.7 or higher
+- Required packages: earthengine-api, numpy, pandas, PIL, geopandas, sklearn, folium, requests
+- Google Earth Engine account with API access enabled
+
+## Example Workflow
+
+1. Run `river_focused_sand_mining.py` to download high-quality river images
+2. View and identify which river segments show sand mining activities
+3. Run the full system with `run_sand_mining_detection.py --mode both` to create probability maps
+4. Use the generated maps to identify hotspots for further investigation
+
+This improved system ensures the river is clearly visible in images and significantly enhances image quality for better sand mining detection.
